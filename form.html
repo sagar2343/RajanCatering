@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckPrice</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive-style.css">
+    <link rel="stylesheet" href="css/lightbox.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: transparent;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .popup {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 10px 20px 10px rgba(2, 38, 6, 0.1);
+            max-width: 340px;
+        }
+        
+        .popup h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .popup input[type="text"],
+        .popup input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        .popup input[type="button"] {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .popup input[type="button"]:hover {
+            background-color: #45a049;
+        }
+        
+        .popup .error {
+            color: red;
+            margin-top: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .selected-count {
+            padding-top: 5%;
+        }
+        /* otp verification msg  */
+        
+        .p-conf,
+        .n-conf {
+            text-align: center;
+            display: none;
+        }
+        
+        .p-conf p {
+            font-size: 15px;
+            font-weight: bold;
+            color: #60cc64;
+            /* Green color for verified */
+        }
+        
+        .n-conf p {
+            font-size: 15px;
+            font-weight: bold;
+            color: #cc4040;
+            /* Green color for verified */
+        }
+        
+        .p-conf button {
+            background-color: #4caf50;
+            /* Yellow color for button */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .p-conf button:hover {
+            background-color: #45a049;
+            /* Lighter shade of yellow on hover */
+        }
+        
+        .popup {
+            position: relative;
+            /* Added */
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 30px;
+            color: #999;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        /* done button  */
+        
+        .selection-container {
+            max-width: 70%;
+            margin-left: 15%;
+            position: relative;
+            margin-bottom: 20px;
+            /* Adjust as needed */
+        }
+        
+        .done-button {
+            position: sticky;
+            bottom: 10px;
+            /* Adjust as needed */
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 13px;
+            right: 10px;
+            /* Adjust as needed */
+            float: right;
+        }
+        /* Food items css */
+        
+        .food-item {
+            width: 80%;
+            background-color: #E2F6DE;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+            padding: 0px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            padding-right: 10px;
+        }
+        
+        .food-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #f6f6f6;
+            transition: border-color 0.3s ease;
+        }
+        
+        .food-name {
+            flex-grow: 1;
+            font-size: 16px;
+            margin-right: 15px;
+        }
+        
+        .veg-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 15px;
+        }
+        
+        .non-veg-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #e53434;
+            margin-right: 15px;
+        }
+        
+        .checkbox {
+            display: flex;
+            align-items: center;
+        }
+        
+        .selection-container {
+            margin-top: 20px;
+        }
+        /* required field css  */
+        /* CSS for required field message */
+        /* CSS for required field message */
+        
+        .required-message {
+            color: red;
+            /* Set the color to red */
+            font-size: 16px;
+            /* Adjust the font size */
+            position: relative;
+            /* Position it relative to the input field */
+            top: 0px;
+            /* Adjust the position to be above the input */
+        }
+    </style>
+
+</head>
+
+<body class="contact">
+
+    <div id="preloader"></div>
+
+    <!-- Navbar Section Start -->
+    <header id="full_nav">
+        <div class="header">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg">
+                    <a class="navbar-brand" href="index.html">
+                        <img src="./images/logo.png" alt="logo">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <!-- <span class="navbar-toggler-icon"></span> -->
+                            <i class="fas fa-stream navbar-toggler-icon"></i>
+                          </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="about.html">About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="service.html">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="gallery.html">Gallery</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="contact.html">Contact</a>
+                            </li>
+                        </ul>
+                        <div class="header_right">
+                            <div class="text-lg-end">
+                                <span>Urgent? Call Us!</span>
+                                <a href="tel:+91 9519208921" style="font-size: 15px;color:white; font-weight: bold;">+91 9519208921</a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <!-- Navbar Section Exit  -->
+
+
+    <!-- banner Section start  -->
+    <section class="banner_section">
+        <div class="container">
+            <div class="banner-content">
+                <h1>Order now</h1>
+            </div>
+        </div>
+    </section>
+    <!-- banner Section Exit  -->
+
+
+    <!-- form Section Start  -->
+    <section class="form_section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <h2>Order</h2>
+            </div>
+            <div>
+
+                <div class="col-20 menu-form">
+                    <div class="row">
+                        <!-- City -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="city">City</h5>
+                            <select id="cityField" class="form-select" name="city" aria-label="Default select example" required>
+                                <option value="" selected="">Select City</option>
+                                <option value="Mumbai">Mumbai</option>
+                                <option value="Thane">Thane</option>
+                                <option value="Navi-Mumbai">Navi-Mumbai</option>
+                            </select>
+                            <span id="cityError" class="col-md-6 mb-4 required-message"></span>
+                        </div>
+                        <!-- Occasion -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="occasion">Occasion</h5>
+                            <select id="occasionId" class="form-select" name="occasion" aria-label="Default select example">
+                                <option value="" selected="">Select Occasion</option>
+                                <option value="Birthday">Birthday</option>
+                                <option value="House Party">House Party</option>
+                                <option value="Pooja @ Home">Pooja @ Home</option>
+                                <option value="Pre-Wedding">Pre-Wedding</option>
+                                <option value="Office Party">Office Party</option>
+                                <option value="House Warming">House Warming</option>
+                                <option value="Kitty Party">Kitty Party</option>
+                                <option value="Kids Party">Kids Party</option>
+                                <option value="Baby Shower">Baby Shower</option>
+                                <option value="Anniversary">Anniversary</option>
+                                <option value="Inviting Guests">Inviting Guests</option>
+                                <option value="Festivals">Festivals</option>
+                                <option value="Others">Others</option>
+                            </select>
+                            <span id="occasionError" class="col-md-6 mb-4 required-message"></span>
+                        </div>
+                        <!-- Event Date -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="date">Event Date</h5>
+                            <input id="eventDate" class="form-select" type="date" name="Select date" required>
+                            <span id="dateError" class="col-md-6 mb-4 required-message"></span>
+                        </div>
+                        <!--  Delivery Time  -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="time">Delivery Time</h5>
+                            <select id="time" class="form-select" required>
+                                <option value="">Select a Time</option>
+                                <option value="5:00 PM">5-6 AM</option>
+                                <option value="6:00 PM">6-7 AM</option>
+                                <option value="7:00 PM">7-8 AM</option>
+                                <option value="8:00 PM">8-9 AM</option>
+                                <option value="9:00 PM">9-10 AM</option>
+                                <option value="10:00 PM">10-11 AM</option>
+                                <option value="1:00 PM">11-12 AM</option>
+                                <option value="12:30 PM">12-1 PM</option>
+                                <option value="1:00 PM">1-2 PM</option>
+                                <option value="2:00 PM">2-3 PM</option>
+                                <option value="3:00 PM">3-4 PM</option>
+                                <option value="4:00 PM">4-5 PM</option>
+                                <option value="5:00 PM">5-6 PM</option>
+                                <option value="6:00 PM">6-7 PM</option>
+                                <option value="7:00 PM">7-8 PM</option>
+                                <option value="8:00 PM">8-9 PM</option>
+                                <option value="9:00 PM">9-10 PM</option>
+                                <option value="10:00 PM">10-11 PM</option>
+                            </select>
+                            <span id="timeError" class="col-md-6 mb-4 required-message"></span>
+                        </div>
+                        <!-- Veg Guest -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="vguest">Number of Guest</h5>
+                            <input id="numberOfGuest" class="form-select" type="number" min="0" placeholder="0" required>
+                            <span id="vegGuestError" class="col-md-6 mb-4 required-message"></span>
+                        </div>
+                    </div>
+                    <hr>
+
+
+                    <form class="container1">
+                        <br>
+                        <div>
+                            <h2>Create Your Menu</h2>
+                            <br> Starters
+                            <br>
+                            <!-- Starters -->
+                            <div class="selection-container">
+                                <div class="search-container" id="search-container-starters">
+                                    Select Starters &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="text" class="search-bar" placeholder="Click here to select">
+                                    <div class="dropdown" id="starter_list">
+                                        <!-- Food items for Starters  -->
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/minisamosa.jpg" alt="Mini Samosa" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Mini Samosa</span>
+                                                <input type="checkbox" name="food" value="Mini Samosa">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/minipizza.jpg" alt="Mini Pizza" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Mini Pizza</span>
+                                                <input type="checkbox" name="food" value="Mini Pizza">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Tandoori+Achari+Aloo.jpg" alt="Tandoori Achari Aloo" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Tandoori Achari Aloo</span>
+                                                <input type="checkbox" name="food" value="Tandoori Achari Aloo">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Tandoori+Paneer+Tikka.jpg" alt="Tandoori Paneer Tikka" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Tandoori Paneer Tikka</span>
+                                                <input type="checkbox" name="food" value="Tandoori Paneer Tikka">
+                                            </div>
+                                        </label><label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Dry+Chilli+chicken.jpeg" alt="Dry Chilli Chicken" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dry Chilli Chicken</span>
+                                                <input type="checkbox" name="food" value="Dry Chilli Chicken">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Veg+Manchurian+Dry.jpg" alt="Dry Veg Manchurian" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dry Veg Manchurian</span>
+                                                <input type="checkbox" name="food" value="Dry Veg Manchurian">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Achari_Paneer_Tikka.jpg" alt="Achari Paneer Tikka" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Achari Paneer Tikka</span>
+                                                <input type="checkbox" name="food" value="Achari Paneer Tikka">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Gobhi+Manchurian.jpg" alt="Dry Gobi Manchurian" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dry Gobi Manchurian</span>
+                                                <input type="checkbox" name="food" value="Dry Gobi Manchurian">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Tandoori+Fish+Tikka.jpg" alt="Tandoori Fish Tikka" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Tandoori Fish Tikka</span>
+                                                <input type="checkbox" name="food" value="Tandoori Fish Tikka">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Paneer+Chilly+Dry+-+Classic.jpg" alt="Dry Paneer Chilly" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dry Paneer Chilly</span>
+                                                <input type="checkbox" name="food" value="Dry Paneer Chilly">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Schzwan+Paneer+Chilly+Dry.jpg" alt="Dry Schzwan Paneer Chilly" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dry Schzwan Paneer Chilly</span>
+                                                <input type="checkbox" name="food" value="Dry Schzwan Paneer Chilly">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/French+Fries.jpg" alt="French Fries" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">French Fries</span>
+                                                <input type="checkbox" name="food" value="French Fries">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Tikka+_+Drumstick+Platter.jpg" alt="Achari Chicken Tikka" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Achari Chicken Tikka</span>
+                                                <input type="checkbox" name="food" value="Achari Chicken Tikka">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Hara+bhara+Kebab.jpg" alt="Hara Bhara Kebab" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Hara Bhara Kebab</span>
+                                                <input type="checkbox" name="food" value="Hara Bhara Kebab">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Paneer+Pudina+Tikka.webp" alt="Pudina Paneer Tikka" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Pudina Paneer Tikka</span>
+                                                <input type="checkbox" name="food" value="Pudina Paneer Tikka">
+                                            </div>
+                                        </label>
+                                        <!-- Other food items -->
+                                        <button class="done-button btn main-btn">Done</button>
+                                    </div>
+                                    <div class="selected-count">Selected Starters: 0</div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <hr>
+                            <br> Mains
+                            <br>
+
+                            <div class="selection-container">
+                                <div class="search-container" id="search-container-starters">
+                                    Select Starters &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="text" class="search-bar" placeholder="Click here to select">
+                                    <div class="dropdown" id="mains_list">
+                                        <!-- Food items for Starters  -->
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Dry+Vegetable+Mix.jpg" alt="Aloo Gobi Tamatari" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Aloo Gobi Tamatari</span>
+                                                <input type="checkbox" name="food" value="Aloo Gobi Tamatari">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chole+Masala.jpg" alt="Chole Masala" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chole Masala</span>
+                                                <input type="checkbox" name="food" value="Chole Masala">
+                                            </div>
+                                        </label>
+
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Dal+Makhani.jpg" alt="Dal Makhani" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dal Makhani</span>
+                                                <input type="checkbox" name="food" value="Dal Makhani">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Tadkewali+dal.jpg" alt="Dal Tadka" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Dal Tadka</span>
+                                                <input type="checkbox" name="food" value="Dal Tadka">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Egg+Masala.jpg" alt="Egg Masala" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Egg Masala</span>
+                                                <input type="checkbox" name="food" value="Egg Masala">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Jeera+aloo.jpg" alt="Jeera Aloo" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Jeera Aloo</span>
+                                                <input type="checkbox" name="food" value="Jeera Aloo">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Butter+Chicken.jpg" alt="Butter Chicken Masala" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Butter Chicken Masala</span>
+                                                <input type="checkbox" name="food" value="Butter Chicken Masala">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Kadahi.jpg" alt="Chicken Kadai" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Kadai</span>
+                                                <input type="checkbox" name="food" value="Chicken Kadai">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Kheema-Pav-6.jpg" alt="Chicken Keema" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Keema</span>
+                                                <input type="checkbox" name="food" value="Chicken Keema">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+manchurian+Gravy.jpg" alt="Chicken Manchurian - Chilli Garlic Gravy" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Manchurian - Chilli Garlic Gravy</span>
+                                                <input type="checkbox" name="food" value="Chicken Manchurian - Chilli Garlic Gravy">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Manchurian+in+hunan+sauce.jpg" alt="Chicken Manchurian - Schezwan Gravy" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Manchurian - Schezwan Gravy</span>
+                                                <input type="checkbox" name="food" value="Chicken Manchurian - Schezwan Gravy">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Pasta+Arabiatta.jpg" alt="Arabiata Pasta (Tomota Sauce)" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Arabiata Pasta (Tomota Sauce)</span>
+                                                <input type="checkbox" name="food" value="Arabiata Pasta (Tomota Sauce)">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Tawa-Sabzi-fry-recipe-02.jpg" alt="Tawa Veg" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Tawa Veg</span>
+                                                <input type="checkbox" name="food" value="Tawa Veg">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Rajma+Masala.jpg" alt="ajma Masala" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">ajma Masala</span>
+                                                <input type="checkbox" name="food" value="ajma Masala">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Dal+Fry.jpg" alt="Yellow Dal Fry" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Yellow Dal Fry</span>
+                                                <input type="checkbox" name="food" value="Yellow Dal Fry">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/_Veg+Manchurian+Gravy.jpg" alt="Veg Manchurian Gravy" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Veg Manchurian Gravy</span>
+                                                <input type="checkbox" name="food" value="Veg Manchurian Gravy">
+                                            </div>
+                                        </label>
+                                        <!-- Other food items -->
+                                        <button class="done-button btn main-btn">Done</button>
+                                    </div>
+                                    <div class="selected-count">Selected Starters: 0</div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <hr>
+
+                            <br> Bread Rice & Noodles
+                            <br>
+
+                            <div class="selection-container">
+                                <div class="search-container" id="search-container-starters">
+                                    Select Starters &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="text" class="search-bar" placeholder="Click here to select">
+                                    <div class="dropdown" id="bread_rice_list">
+                                        <!-- Food items for Starters  -->
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Butter+Naan.jpg" alt="Butter Naan" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Butter Naan</span>
+                                                <input type="checkbox" name="food" value="Butter Naan">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Butter+Garlic+Naan.jpg" alt="Butter Tandoori Kulcha" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Butter Tandoori Kulcha</span>
+                                                <input type="checkbox" name="food" value="Butter Tandoori Kulcha">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Chilli+Noodle.webp" alt="Chicken Noodle" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Noodle</span>
+                                                <input type="checkbox" name="food" value="Chicken Noodle">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Biryani.jpg" alt="Chicken Dum Biryani (Includes Raita)" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Dum Biryani (Includes Raita)</span>
+                                                <input type="checkbox" name="food" value="Chicken Dum Biryani (Includes Raita)">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Fried+Rice.png" alt="Chicken Fried Rice" class="food-image">
+                                                <span class="non-veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Fried Rice</span>
+                                                <input type="checkbox" name="food" value="Chicken Fried Rice">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chicken+Hakka+Noodle.jpg" alt="Chicken Hakka Noodle" class="food-image">
+                                                <span class="non-veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chicken Hakka Noodle</span>
+                                                <input type="checkbox" name="food" value="Chicken Hakka Noodle">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Curd+Rice.webp" alt="Curd Rice" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Curd Rice</span>
+                                                <input type="checkbox" name="food" value="Curd Rice">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Flavoured+Rice.jpg" alt="Flavoured Rice / Veg Pulao" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Flavoured Rice / Veg Pulao</span>
+                                                <input type="checkbox" name="food" value="Flavoured Rice / Veg Pulao">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Paratha+(1+No).jpg" alt="Lachha Paratha" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Lachha Paratha</span>
+                                                <input type="checkbox" name="food" value="Lachha Paratha">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Pooris.jpg" alt="Poori" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Poori</span>
+                                                <input type="checkbox" name="food" value="Poori">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Paneer+Tikka+Biryani.jpg" alt="Paneer Tikka Dum Biryani (Includes Raita)" class="food-image">
+                                                <span class="veg-dot"></span><!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Paneer Tikka Dum Biryani (Includes Raita)</span>
+                                                <input type="checkbox" name="food" value="Paneer Tikka Dum Biryani (Includes Raita)">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Steamed+Basmati+Rice.jpg" alt="Steamed Rice" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Steamed Rice</span>
+                                                <input type="checkbox" name="food" value="Steamed Rice">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Veg+Biryani.jpg" alt="Veg Dum Biryani (Includes Raita)" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Veg Dum Biryani (Includes Raita)</span>
+                                                <input type="checkbox" name="food" value="Veg Dum Biryani (Includes Raita)">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Veg+Fried+Rice.jpg" alt="Veg Fried Rice" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Veg Fried Rice</span>
+                                                <input type="checkbox" name="food" value="Veg Fried Rice">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Veg-Hakka-Noodles.jpg" alt="Veg Hakka Noodle" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Veg Hakka Noodle</span>
+                                                <input type="checkbox" name="food" value="Veg Hakka Noodle">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Plain+Naan.jpeg" alt="Wheat Paratha" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Wheat Paratha</span>
+                                                <input type="checkbox" name="food" value="Wheat Paratha">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Tandoori+Roti.png" alt="Wheat Tandoori Roti" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Wheat Tandoori Roti</span>
+                                                <input type="checkbox" name="food" value="Wheat Tandoori Roti">
+                                            </div>
+                                        </label>
+                                        <!-- Other food items -->
+                                        <button class="done-button btn main-btn">Done</button>
+                                    </div>
+                                    <div class="selected-count">Selected Starters: 0</div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <hr>
+
+                            <br> Desserts
+                            <br>
+
+                            <div class="selection-container">
+                                <div class="search-container" id="search-container-starters">
+                                    Select Starters &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="text" class="search-bar" placeholder="Click here to select">
+                                    <div class="dropdown" id="dessert_list">
+                                        <!-- Food items for Starters  -->
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Angoori+Jamun+(12+Nos).jpg" alt="Gulab Jamun" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Gulab Jamun</span>
+                                                <input type="checkbox" name="food" value="Gulab Jamun">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Chocolate+Brownie.jpg" alt="Chocolate Brownie" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Chocolate Brownie</span>
+                                                <input type="checkbox" name="food" value="Chocolate Brownie">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Kesar-Phirni.jpg" alt="Kesariya Phirni" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Kesariya Phirni</span>
+                                                <input type="checkbox" name="food" value="Kesariya Phirni">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Indian-fruit-custard-recipe.jpg" alt="Fruit Custard" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Fruit Custard</span>
+                                                <input type="checkbox" name="food" value="Fruit Custard">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/Moong+Dal+Halwa.jpg" alt="Moong Dal Halwa" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Moong Dal Halwa</span>
+                                                <input type="checkbox" name="food" value="Moong Dal Halwa">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/shahi+Tukda.jpg" alt="Shahi Meetha" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Shahi Meetha</span>
+                                                <input type="checkbox" name="food" value="Shahi Meetha">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/kesariya+jalebi.jpg" alt="kesariya jalebi" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">Kesariya jalebi</span>
+                                                <input type="checkbox" name="food" value="kesariya jalebi">
+                                            </div>
+                                        </label>
+                                        <label class="checkbox">
+                                            <div class="food-item">
+                                                <img src="food-items/kesarMalaiChamCham.webp" alt="kesar malai cham cham" class="food-image">
+                                                <span class="veg-dot"></span> <!-- Green or red dot for veg or non-veg -->
+                                                <span class="food-name">kesar malai cham cham</span>
+                                                <input type="checkbox" name="food" value="kesar malai cham cham">
+                                            </div>
+                                        </label>
+                                        <!-- Other food items -->
+                                        <button class="done-button btn main-btn">Done</button>
+                                    </div>
+                                    <div class="selected-count">Selected Starters: 0</div>
+                                </div>
+                            </div>
+                            <br>
+                            <hr>
+                            <br> Details
+
+                            <br>
+                            <input class="Customize_menu" type="text" name="name" id="customerName" placeholder="name">
+                            <input class="Customize_menu" type="email" id="customerEmail" placeholder="Email">
+                            <input class="Customize_menu" type="tel" name="whatsapp no" id="Wnumber" placeholder="number">
+                            <br> Special Restriction? Chef Note? <br>
+
+                            <textarea class="text-area" name="suggestion" id="Restriction" cols="28" rows="2"></textarea>
+
+                            <center>
+                                <div id="otpPopup" class="popup" style="display: none;">
+                                    <!-- Cross button -->
+                                    <span class="close-btn" onclick="closePopup()">×</span>
+                                    <h2>Verify</h2>
+                                    <div id="otpcontainer">
+                                        <div id="sender">
+                                            <input type="text" id="number" value="+91" placeholder="Phone Number">
+                                            <div id="recaptcha-container"></div>
+                                            <input type="button" id="send" class="btn main-btn" value="Send OTP" onclick="phoneAuth()">
+                                        </div>
+                                        <div id="verifier" style="display: none;">
+                                            <input type="text" id="verificationcode" placeholder="Enter OTP">
+                                            <input type="button" class="btn main-btn" id="verify" value="Verify OTP" onclick="codeverify()">
+                                            <div class="p-conf">
+                                                <p>Successfully Verified</p>
+                                                <button id="nextBtn" class="btn main-btn" onclick="">Continue ></button>
+                                            </div>
+
+                                            <div class="n-conf">
+                                                <p>Enter Correct OTP</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button id="showPopupBtn" class="btn main-btn" onclick="formvalidation();">Order Now</button>
+                            </center>
+                    </form>
+
+
+                    <!-- <div class="col-12 mb-4">
+                                <textarea class="form-control">Your Message...</textarea>
+                            </div> -->
+
+                    <!-- </div> -->
+                    <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+    </section>
+    <!-- About Section EXit  -->
+
+    <!-- footer Section start -->
+    <section class="footer_wrapper mt-3 mb-md-0" data-aos="fade-up">
+        <div class="container px-5 px-lg-0">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+                    <h5>Rajan Catering & Foods</h5>
+                    <div class="contact-info">
+                        <ul class="list-unstyled">
+                            <li><a href="#"><i class="fa fa-home me-3"></i> No..96, Mumbai, India</a></li>
+                            <li><a href="tel:+91 9519208921"><i class="fa fa-phone me-3"></i> +91 1231231230</a></li>
+                            <li><a href="mailto:rajancater@gmail.com"><i class="fa fa-envelope me-3"></i>rajancater@gmail.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+                    <h5>Customer Support</h5>
+                    <ul class="link-widget p-0">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-sm-6 mb-5 mb-lg-0">
+                    <h5>Quick Links</h5>
+                    <ul class="link-widget p-0">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-sm-6 mb-lg-0">
+                    <div class="form-group mb-4">
+                        <a href="form.html" class="btn main-btn">Instant Order</a>
+                    </div>
+                    <h5>Stay Connected</h5>
+                    <ul class="social-network d-flex align-items-center p-0">
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid copyright-section">
+            <p>Copyright<a href="#">© RajanCatering&Foods.</a>All Rights Reserved</p>
+        </div>
+    </section>
+    <!-- footer Section Exit -->
+
+    <!-- Bootstrap 5 CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <!-- jQuery CDN  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script src="form/script.js"></script>
+    <script src="js/lightbox.js"></script>
+    <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+
+
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+
+
+
+
+    <!-- firebase setup  -->
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEDcNpesoJNyyNqNz_4m1ZMp0R-ElMuhI",
+            authDomain: "rajancatering-f17c5.firebaseapp.com",
+            projectId: "rajancatering-f17c5",
+            storageBucket: "rajancatering-f17c5.appspot.com",
+            messagingSenderId: "763477739786",
+            appId: "1:763477739786:web:edeb4930befe365e0112f3"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function render() {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+            recaptchaVerifier.render();
+        }
+
+        function phoneAuth() {
+            var number = document.getElementById('number').value;
+            firebase.auth().signInWithPhoneNumber(number, window.recaptchaVerifier).then(function(confirmationResult) {
+                window.confirmationResult = confirmationResult;
+                coderesult = confirmationResult;
+                document.getElementById('sender').style.display = 'none';
+                document.getElementById('verifier').style.display = 'block';
+            }).catch(function(error) {
+                alert(error.message);
+            });
+        }
+
+
+        function codeverify() {
+            var code = document.getElementById('verificationcode').value;
+            coderesult.confirm(code).then(function(result) {
+                // Extract the verified phone number
+                var phoneNumber = result.user.phoneNumber;
+
+                // Show success message or redirect to the next page
+                document.getElementsByClassName('p-conf')[0].style.display = 'block';
+                document.getElementsByClassName('n-conf')[0].style.display = 'none';
+
+                // Enable the Continue button event listener outside this function
+                enableContinueButton(phoneNumber);
+            }).catch(function(error) {
+                // Show error message
+                document.getElementsByClassName('p-conf')[0].style.display = 'none';
+                document.getElementsByClassName('n-conf')[0].style.display = 'block';
+            });
+        }
+
+        function enableContinueButton(phoneNumber) {
+            // Continue button event listener
+            document.getElementById('nextBtn').addEventListener('click', function(event) {
+                event.preventDefault();
+
+                // Fetch other form data
+                var city = document.getElementById('cityField').value;
+                var occasion = document.getElementById('occasionId').value;
+                var eventDate = document.querySelector('input[type="date"]').value;
+                var deliveryTime = document.getElementById('time').value;
+                var numberOfGuest = document.querySelector('input[type="number"]').value;
+
+                // Fetch selected checkbox items
+                var starters = [];
+                var mains = [];
+                var dessert = [];
+                // Modify these variables based on your checkbox IDs
+                var startersCheckbox = document.querySelectorAll('input[name="starters"]:checked');
+                var mainsCheckbox = document.querySelectorAll('input[name="mains"]:checked');
+                var dessertCheckbox = document.querySelectorAll('input[name="dessert"]:checked');
+
+                startersCheckbox.forEach(function(checkbox) {
+                    starters.push(checkbox.value);
+                });
+
+                mainsCheckbox.forEach(function(checkbox) {
+                    mains.push(checkbox.value);
+                });
+
+                dessertCheckbox.forEach(function(checkbox) {
+                    dessert.push(checkbox.value);
+                });
+
+                // Create formData object including phone number and checkbox items
+                const formData = {
+                    phoneNumber: phoneNumber, // Include phone number
+                    city: city,
+                    occasion: occasion,
+                    eventDate: eventDate,
+                    deliveryTime: deliveryTime,
+                    numberOfGuest: numberOfGuest,
+                    starters: starters, // Include starters list
+                    mains: mains, // Include mains list
+                    dessert: dessert // Include dessert list
+                };
+
+                // Access Firebase Firestore database
+                const database = firebase.firestore();
+
+                // Add the form data to Firestore with phone number as document ID
+                database.collection('formData').doc(phoneNumber).set(formData)
+                    .then(() => {
+                        // Reset the form after successful submission
+                        document.querySelector('form').reset();
+                        alert('Form submitted successfully!');
+                        sendEmailNotification(eventDate, deliveryTime, numberOfGuest, phoneNumber);
+                        // redirectToNextPage(); // Redirect to the next page
+                    })
+                    .catch((error) => {
+                        console.error('Error submitting form:', error);
+                        alert('Error submitting form. Please try again later.');
+                    });
+            });
+        }
+
+
+
+
+        // Initialize EmailJS with your user ID
+        emailjs.init('t6EzBfSeIZlWAA4fG');
+
+        // Function to send email notification
+        function sendEmailNotification(eventDate, deliveryTime, numberOfGuest, phoneNumber) {
+            emailjs.send("service_ht0rkfq", "template_mu3bgsk", {
+                    eventdate: eventDate,
+                    eventtime: deliveryTime,
+                    guestnumber: numberOfGuest,
+                    pnumber: phoneNumber,
+                })
+                .then(function(response) {
+                    console.log("Email sent:", response);
+                    window.location.href = "thankyou.html";
+                }, function(error) {
+                    console.error("Error sending email:", error);
+                });
+        }
+
+
+
+
+        // Minimum date to select event date 
+        // Function to check if the entered date is at least 24 hours from the current time
+        function isDateValid() {
+            var eventDateInput = document.getElementById('eventDate');
+            var enteredDate = new Date(eventDateInput.value);
+            var currentDate = new Date();
+            // Add 24 hours to the current date
+            currentDate.setDate(currentDate.getDate() + 1);
+
+            // Check if the entered date is at least 24 hours from the current date
+            if (enteredDate < currentDate) {
+                alert('Event date must be at least 24 hours from the current time.');
+                return false;
+            }
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        // cross button to close 
+        function closePopup() {
+            document.getElementById('otpPopup').style.display = 'none';
+            document.getElementById('showPopupBtn').style.display = 'block';
+        }
+
+        function redirectToNextPage() {
+            // Redirect to the next page
+            window.location.href = "thankyou.html"; // Replace "next_page.html" with the URL of your next page
+        }
+
+        // ------------------- 
+
+
+
+
+        // order now button 
+
+
+        // continue button 
+        // document.getElementById('nextBtn').addEventListener('click', function(event) {
+        //     event.preventDefault();
+        //     redirectToNextPage();
+        // });
+    </script>
+
+
+
+    <!-- form validation  -->
+
+    <script>
+        function formvalidation() {
+            var city = document.getElementById('cityField');
+            var occasion = document.getElementById('occasionId');
+            var date = document.querySelector('input[type="date"]');
+            var time = document.getElementById('time');
+            var vegGuest = document.querySelector('input[type="number"]');
+
+            if (city.value.trim() === '') {
+                document.getElementById('cityError').innerText = 'City is required.';
+                city.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return false;
+            } else {
+                document.getElementById('cityError').innerText = '';
+            }
+
+            if (occasion.value.trim() === '') {
+                document.getElementById('occasionError').innerText = 'Occasion is required.';
+                occasion.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return false;
+            } else {
+                document.getElementById('occasionError').innerText = '';
+            }
+
+            if (date.value.trim() === '') {
+                document.getElementById('dateError').innerText = 'Event Date is required.';
+                date.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return false;
+            } else {
+                // Validate the event date
+                var eventDate = new Date(date.value);
+                var currentDate = new Date();
+                currentDate.setHours(currentDate.getHours() + 14); // Add 14 hours to the current date
+
+                if (eventDate < currentDate) {
+                    document.getElementById('dateError').innerText = 'Event date must be at least 14 hours from the current time.';
+                    date.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    return false;
+                } else {
+                    document.getElementById('dateError').innerText = '';
+                }
+            }
+
+            if (time.value.trim() === '') {
+                document.getElementById('timeError').innerText = 'Delivery Time is required.';
+                time.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return false;
+            } else {
+                document.getElementById('timeError').innerText = '';
+            }
+
+            if (vegGuest.value.trim() === '') {
+                document.getElementById('vegGuestError').innerText = 'Veg Guest is required.';
+                vegGuest.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                return false;
+            } else {
+                document.getElementById('vegGuestError').innerText = '';
+            }
+
+            // Return true to allow further processing
+            return true;
+        }
+
+
+
+        // Call formvalidation() when "Order Now" button is clicked
+        document.getElementById('showPopupBtn').addEventListener('click', function(event) {
+            // Prevent the default form submission behavior
+            event.preventDefault();
+
+            // Call formvalidation() function
+            var isValid = formvalidation();
+
+            // If form is valid, proceed with other actions
+            if (isValid) {
+                // Your code to proceed after validation
+                document.getElementById('otpPopup').style.display = 'block';
+                document.getElementById('showPopupBtn').style.display = 'none';
+                render(); // Assuming render() is a valid function
+            }
+        });
+    </script>
+
+
+    <!-- Firebase database storing form values  -->
+
+
+</body>
+
+</html>
