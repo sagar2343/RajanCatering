@@ -37,9 +37,17 @@ function whatsapp() {
 
 
 // ================splash screen===================== 
-
 var loader = document.getElementById("preloader");
 
-window.addEventListener("load", function() {
+// window.addEventListener("load", function() {
+//     loader.style.display = "none";
+// })
+var loader = document.getElementById("preloader");
+
+// Show the preloader initially
+loader.style.display = "block";
+
+// Hide the preloader after 2 seconds
+setTimeout(function() {
     loader.style.display = "none";
-})
+}, 1000);
